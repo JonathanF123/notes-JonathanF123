@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:notes/services/note_service.dart';
 
 class NoteListScreen extends StatefulWidget {
   const NoteListScreen({super.key});
@@ -65,19 +65,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Map<String, dynamic> newNote = {};
-                        // ini adalah alternatif dari yang di atas
-                        // Map<String, dynamic> newNote =
-                        //     new Map<String, dynamic>();
-                        newNote['title'] = _titleController.text;
-                        newNote['description'] = _descriptionController.text;
-
-                        FirebaseFirestore.instance
-                            .collection('notes')
-                            .add(newNote)
-                            .whenComplete(() {
-                          Navigator.of(context).pop();
-                        });
+                        NoteService.addNote(_titleController.text,
+                                _descriptionController.text)
+                            .whenComplete(() => Navigator.of(context).pop());
                       },
                       child: const Text('Save')),
                 ],
@@ -97,10 +87,10 @@ class NoteList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController titleController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
+    // TextEditingController titleController = TextEditingController();
+    // TextEditingController descriptionController = TextEditingController();
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('notes').snapshots(),
+      stream: NoteService.getNoteList(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Errorr : ${snapshot.error}');
@@ -113,7 +103,7 @@ class NoteList extends StatelessWidget {
           default:
             return ListView(
               padding: const EdgeInsets.only(bottom: 80),
-              children: snapshot.data!.docs.map((document) {
+              children: snapshot.data!.map((document) {
                 return Card(
                   child: ListTile(
                     onTap: () {
@@ -162,21 +152,12 @@ class NoteList extends StatelessWidget {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    Map<String, dynamic> updateNote = {};
-                                    // ini adalah alternatif dari yang di atas
-                                    // Map<String, dynamic> newNote =
-                                    //     new Map<String, dynamic>();
-                                    updateNote['title'] = titleController.text;
-                                    updateNote['description'] =
-                                        descriptionController.text;
-
-                                    FirebaseFirestore.instance
-                                        .collection('notes')
-                                        .doc(document.id)
-                                        .update(updateNote)
-                                        .whenComplete(() {
-                                      Navigator.of(context).pop();
-                                    });
+                                    NoteService.updateNote(
+                                            document['id'],
+                                            titleController.text,
+                                            descriptionController.text)
+                                        .whenComplete(
+                                            () => Navigator.of(context).pop());
                                   },
                                   child: const Text('Save')),
                             ],
@@ -188,10 +169,7 @@ class NoteList extends StatelessWidget {
                     subtitle: Text(document['description']),
                     trailing: InkWell(
                       onTap: () {
-                        FirebaseFirestore.instance
-                            .collection('notes')
-                            .doc(document.id)
-                            .delete();
+                        NoteService.deleteNote(document['id']);
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
