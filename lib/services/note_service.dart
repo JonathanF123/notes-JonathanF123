@@ -57,4 +57,3 @@ class NoteService {
     });
   }
 }
-Sesuaikan lagi N
