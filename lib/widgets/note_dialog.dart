@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/note_service.dart';
 
+
 class NoteDialog extends StatelessWidget {
   final Map<String, dynamic>? note;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+
   NoteDialog({super.key, this.note}) {
     if (note != null) {
-      // noteId = note['id'];
       _titleController.text = note!['title'];
       _descriptionController.text = note!['description'];
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +23,17 @@ class NoteDialog extends StatelessWidget {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Add'),
-          const Padding(
-            padding: EdgeInsets.only(top: 10.0),
-            child: Text(
-              'Title:',
-              textAlign: TextAlign.start,
-            ),
+          const Text(
+            'Title: ',
+            textAlign: TextAlign.start,
           ),
           TextField(
             controller: _titleController,
           ),
           const Padding(
-            padding: EdgeInsets.only(top: 10.0),
+            padding: EdgeInsets.only(top: 20),
             child: Text(
-              'Description:',
-              textAlign: TextAlign.start,
+              'Description: ',
             ),
           ),
           TextField(
@@ -44,15 +41,14 @@ class NoteDialog extends StatelessWidget {
           ),
         ],
       ),
-      // Action berisi kumpulan button
       actions: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('cancel'),
+            child: const Text('Cancel'),
           ),
         ),
         ElevatedButton(
@@ -75,3 +71,5 @@ class NoteDialog extends StatelessWidget {
     );
   }
 }
+
+
