@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+// import 'package:notes/screens/google_maps_screen.dart';
 import 'package:notes/screens/note_edit_screen.dart';
 import 'package:notes/services/note_service.dart';
-import 'package:notes/widgets/note_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'google_map_screen.dart';
 
 class NoteListScreen extends StatefulWidget {
   const NoteListScreen({super.key});
@@ -24,7 +27,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NoteEditScreen(),
+              builder: (context) => const NoteEditScreen(),
             ),
           );
         },
@@ -72,9 +75,7 @@ class NoteList extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => NoteEditScreen(
-                            note: document,
-                          ),
+                          builder: (context) => NoteEditScreen(note: document),
                         ),
                       );
                     },
@@ -87,12 +88,19 @@ class NoteList extends StatelessWidget {
                                   topLeft: Radius.circular(16),
                                   topRight: Radius.circular(16),
                                 ),
-                                child: Image.network(
-                                  document.imageUrl!,
+                                child: CachedNetworkImage(
+                                  imageUrl: document.imageUrl!,
                                   fit: BoxFit.cover,
                                   alignment: Alignment.center,
                                   width: double.infinity,
                                   height: 150,
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Center(
+                                    child: Icon(Icons.error),
+                                  ),
                                 ),
                               )
                             : Container(),
@@ -107,8 +115,18 @@ class NoteList extends StatelessWidget {
                                 onPressed: document.latitude != null &&
                                         document.longitude != null
                                     ? () {
-                                        _launchMaps(document.latitude!,
-                                            document.longitude!);
+                                        // _launchMaps(document.latitude!,
+                                        //     document.longitude!);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                GoogleMapsScreen(
+                                              latitude: document.latitude!,
+                                              longitude: document.longitude!,
+                                            ),
+                                          ),
+                                        );
                                       }
                                     : null, // Disable the button if latitude or longitude is null
                               ),

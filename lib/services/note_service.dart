@@ -12,7 +12,7 @@ class NoteService {
       _database.collection('notes');
   static final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  static Future uploadImage(XFile imageFile) async {
+  static Future<String?> uploadImage(XFile imageFile) async {
     try {
       String fileName = path.basename(imageFile.path);
       Reference ref = _storage.ref().child('images/$fileName');
@@ -36,7 +36,9 @@ class NoteService {
     Map<String, dynamic> newNote = {
       'title': note.title,
       'description': note.description,
-      'image_rl': note.imageUrl,
+      'image_url': note.imageUrl,
+      'latitude': note.latitude,
+      'longitude': note.longitude,
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
     };
@@ -48,6 +50,8 @@ class NoteService {
       'title': note.title,
       'description': note.description,
       'image_url': note.imageUrl,
+      'latitude': note.latitude,
+      'longitude': note.longitude,
       'created_at': note.createdAt,
       'updated_at': FieldValue.serverTimestamp(),
     };
@@ -72,6 +76,10 @@ class NoteService {
           title: data['title'],
           description: data['description'],
           imageUrl: data['image_url'],
+          latitude:
+              data['latitude'] != null ? data['latitude'] as double : null,
+          longitude:
+              data['longitude'] != null ? data['longitude'] as double : null,
           createdAt: data['created_at'] != null
               ? data['created_at'] as Timestamp
               : null,
