@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-// import 'package:notes/screens/google_maps_screen.dart';
+import 'package:notes/screens/google_maps_screen.dart';
 import 'package:notes/screens/note_edit_screen.dart';
 import 'package:notes/services/note_service.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'google_map_screen.dart';
 
 class NoteListScreen extends StatefulWidget {
   const NoteListScreen({super.key});
